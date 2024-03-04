@@ -1,0 +1,41 @@
+.profileInfo {
+  margin-top: 3rem;
+
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-content: center;
+
+  button {
+    width: fit-content;
+    margin-top: 0.5rem;
+  }
+
+  .information {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    p {
+      color: var(--slate-400);
+    }
+  }
+}
+.products {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.addProduct {
+  background-color: var(--slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  font-size: 3rem;
+  i {
+    color: var(--slate-400);
+  }
+}

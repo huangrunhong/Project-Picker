@@ -1,0 +1,52 @@
+.card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  &:hover {
+    .name {
+      display: flex;
+    }
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .name {
+    display: none;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2rem 1rem 1rem 1rem;
+    position: absolute;
+
+    align-items: center;
+    justify-content: space-between;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(30, 41, 59, 0) 0%,
+      rgba(30, 41, 59, 0.5) 100%
+    );
+    color: white;
+
+    button {
+      width: 2rem;
+      height: 2rem;
+      font-size: 1.25rem;
+      border-radius: 50%;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      &.liked {
+        color: var(--red-400);
+      }
+    }
+  }
+}

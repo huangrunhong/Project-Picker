@@ -1,0 +1,13 @@
+.tabs {
+  margin-top: 5rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--slate-100);
+  .active {
+    background-color: var(--slate-100);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+  }
+}
