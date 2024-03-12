@@ -1,0 +1,26 @@
+.home {
+  display: flex;
+  flex-direction: column;
+
+  .functions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 1rem;
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    background-color: white;
+
+    .searchBar {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .productsGallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+}

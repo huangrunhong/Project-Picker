@@ -7,6 +7,14 @@ export const addLikeProduct = async (productId, userId) => {
   if (!foundProduct)
     throw new Error(`product with ID ${productId} does not exist`);
 
+  const productLikedByUser = await User.findOne({
+    _id: userId,
+    likes: { $in: [productId] },
+  });
+
+  if (productLikedByUser)
+    throw new Error(`Product with ID ${productId} ist already by user liked`);
+
   const updatedUser = await User.findOneAndUpdate(
     { _id: userId },
     { $push: { likes: productId } }

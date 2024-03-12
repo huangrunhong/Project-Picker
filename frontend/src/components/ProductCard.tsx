@@ -1,54 +1,85 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import clsx from "clsx";
+import { Link } from "react-router-dom";
 import Product from "../types/Product";
 import styles from "./ProductCard.module.scss";
-import clsx from "clsx";
-import UserContext from "../contexts/UserContext";
+
+import ToggleLikeButton from "./ToggleLikeButton";
+import Avatar from "./Avatar";
 import AuthorizationContext from "../contexts/AuthorizationContext";
 
-type ProductCardProps = { product: Product };
+type ProductCardProps = {
+  product: Product;
+  compact?: boolean;
+  initiative?: boolean;
+};
 
-const ProductCard = ({ product }: ProductCardProps) => {
-  const [user] = useContext(UserContext);
+const ProductCard = ({ product, compact, initiative }: ProductCardProps) => {
+  const [liked, setLiked] = useState(product.liked);
   const [accessToken] = useContext(AuthorizationContext);
-  const [liked, setLiked] = useState(false);
 
-  useEffect(() => {
-    setLiked(!!user?.likes.includes(product._id));
-  }, [user, product]);
+  if (!product) {
+    return null;
+  }
 
-  const toggleLike = async () => {
-    if (!user || !accessToken) return;
+  const onClickLike = (next: boolean) => {
+    const count = next ? liked + 1 : liked - 1;
 
-    const next = !liked;
-    setLiked(next);
+    setLiked(count < 0 ? 0 : count);
+  };
 
-    const addLikeUrl = `/api/products/${product._id}/like`;
-    const unLikeUrl = `/api/products/${product._id}/unlike`;
+  const deleteProduct = async () => {
+    try {
+      const response = await fetch(`/api/products/${product._id}`, {
+        method: "DELETE",
+        headers: { authorization: `Bearer ${accessToken}` },
+      });
 
-    const response = await fetch(next ? addLikeUrl : unLikeUrl, {
-      method: "POST",
-      headers: { authorization: `Bearer ${accessToken}` },
-    });
-
-    await response.json();
+      await response.json();
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className={styles.card}>
-      <img src={product.photos[0]} />
-      <div className={styles.name}>
-        <h4>{product.name}</h4>
-        <button
-          className={clsx({ [styles.liked]: liked })}
-          onClick={toggleLike}
-        >
-          {liked ? (
-            <i className="ri-heart-fill"></i>
+    <div className={styles.productCard}>
+      <div className={styles.card}>
+        <Link to={`/product/${product._id}`}>
+          <img src={product.photos[0]} />
+        </Link>
+        <div className={styles.name}>
+          <h4>{product.name}</h4>
+          {initiative ? (
+            <div className={styles.initiativeButtons}>
+              <Link to={`/edit-product/${product._id}`}>
+                <button className="icon-button">
+                  <i className="ri-edit-box-line"></i>
+                </button>
+              </Link>
+              <button className="icon-button" onClick={deleteProduct}>
+                <i className="ri-delete-bin-line"></i>
+              </button>
+            </div>
           ) : (
-            <i className="ri-heart-line"></i>
+            <ToggleLikeButton productId={product._id} onClick={onClickLike} />
           )}
-        </button>
+        </div>
       </div>
+      {compact && (
+        <div className={clsx(styles.label)}>
+          <div className={styles.labelPart}>
+            <Avatar small avatar={product.owner.profileImage} />
+            <Link to={`/user/${product.owner._id}/profile`}>
+              <h4>{product.owner.name}</h4>
+            </Link>
+          </div>
+          <div className={styles.labelPart}>
+            <ToggleLikeButton />
+            <p>{liked}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

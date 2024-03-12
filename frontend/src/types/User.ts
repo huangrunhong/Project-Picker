@@ -1,3 +1,5 @@
+import Product from "./Product";
+
 type User = {
   _id: string;
   name: string;
@@ -10,10 +12,10 @@ type User = {
   country: string | undefined;
   city: string | undefined;
   createAt: string;
-  products: string[];
-  likes: string[];
-  followers: string[];
-  follows: string[];
+  products: Product[];
+  likes: Product[];
+  followers: User[];
+  follows: User[];
 };
 
 export default User;

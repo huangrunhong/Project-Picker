@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
 import login from "../images/login.jpg";
@@ -15,10 +15,11 @@ const Register = () => {
   const passwordInput = useRef<HTMLInputElement>(null);
   const repeatPasswordInput = useRef<HTMLInputElement>(null);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const navigate = useNavigate();
 
   const hideErrorMessage = () => setShowErrorMessage(false);
 
-  const createAccount = () => {
+  const createAccount = async () => {
     setShowErrorMessage(true);
 
     if (
@@ -38,6 +39,11 @@ const Register = () => {
       return;
     }
 
+    if (passwordInput.current.value !== repeatPasswordInput.current.value) {
+      alert("Password not match");
+      return;
+    }
+
     const params: RequestInit = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -48,7 +54,10 @@ const Register = () => {
       }),
     };
 
-    fetch("/api/users/register", params);
+    const response = await fetch("/api/users/register", params);
+    const { result } = await response.json();
+
+    navigate(`/verify-email/${result._id}`);
   };
 
   return (
@@ -59,7 +68,12 @@ const Register = () => {
           [styles.showErrorMessage]: showErrorMessage,
         })}
       >
-        <h2>Register to Picker</h2>
+        <h2>
+          Register to{" "}
+          <Link to="/">
+            <span>Produuucts</span>
+          </Link>
+        </h2>
         <input
           ref={nameInput}
           type="text"
@@ -105,7 +119,7 @@ const Register = () => {
         </button>
         <Link className={clsx(styles.link, "outline-button")} to="/login">
           <small className="text-tiny text-muted">Have a account?</small>
-          <span>Log in</span>
+          <p>Log in</p>
         </Link>
       </div>
     </section>

@@ -1,0 +1,15 @@
+.userCard {
+  background-color: white;
+  border: 2px solid var(--slate-100);
+  border-radius: 1rem;
+  padding: 2rem;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  p {
+    color: var(--slate-400);
+    font-weight: 100;
+  }
+}

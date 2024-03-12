@@ -41,15 +41,20 @@ const Login = () => {
     <section className={styles.root}>
       <img src={login} alt="login" />
       <div className={styles.form}>
-        <h2>Login to Picker</h2>
+        <h2>
+          Login to{"  "}
+          <Link to="/">
+            <span>Produuucts</span>
+          </Link>
+        </h2>
         <input ref={emailInput} type="email" placeholder="Email" />
         <Password name="password" ref={passwordInput} placeholder="Password" />
         <button className="primary-button" onClick={loginUser}>
           Login
         </button>
         <Link className={clsx(styles.link, "outline-button")} to="/register">
-          <span className="text-tiny text-muted">New to Picker?</span>
-          <span>Sign up</span>
+          <small className="text-tiny text-muted">New to Picker?</small>
+          <p>Sign up</p>
         </Link>
       </div>
     </section>

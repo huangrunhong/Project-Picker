@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 const productSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    owner: { type: String, required: true },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     description: { type: String, required: true },
     field: {
       type: String,
@@ -32,4 +36,5 @@ const productSchema = mongoose.Schema(
 );
 
 const Product = mongoose.model("Product", productSchema);
+
 export default Product;

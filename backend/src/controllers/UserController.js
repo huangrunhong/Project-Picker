@@ -9,6 +9,16 @@ const registerUserCtrl = catchAsync(
   { message: "Could not register" }
 );
 
+const verifyEmailCtrl = catchAsync(
+  async (req, res) => {
+    const userId = req.body.userId;
+    const sixDigitCode = req.body.sixDigitCode;
+    const result = await UserService.verifyEmail({ userId, sixDigitCode });
+    res.json({ success: true, result });
+  },
+  { message: "Could not verify email" }
+);
+
 const loginUserCtrl = catchAsync(
   async (req, res) => {
     const result = await UserService.loginUser(req.body);
@@ -23,7 +33,7 @@ const logoutUserCtrl = catchAsync(
     if (req.verifiedUserClaims.type !== "refresh")
       throw new Error("Token must be of type 'refresh'");
 
-    res.session = null; // 为啥说refreshToken undefined
+    req.session.refreshToken = null;
 
     res.json({ success: true });
   },
@@ -43,10 +53,10 @@ const getUserProfileCtrl = catchAsync(
 const editUserCtrl = catchAsync(
   async (req, res) => {
     const userId = req.verifiedUserClaims.sub;
-    console.log(userId);
     const userInfo = req.body;
-    const userProfileImage = `http://localhost:8888/users/${req.file.originalname}`;
-    userInfo.profileImage = userProfileImage;
+    if (req.file) {
+      userInfo.profileImage = `http://localhost:8888/users/${req.file.originalname}`;
+    }
 
     const result = await UserService.editUser({
       userId,
@@ -61,9 +71,9 @@ const addFollowCtrl = catchAsync(
   async (req, res) => {
     const toBeFollowedId = req.params.userId;
 
-    const followingId = req.verifiedUserClaims.sub;
+    const authorizedId = req.verifiedUserClaims.sub;
 
-    const result = await UserService.addFollow(toBeFollowedId, followingId);
+    const result = await UserService.addFollow(toBeFollowedId, authorizedId);
     res.json({ success: true, result });
   },
   { message: "Could not follow" }
@@ -72,8 +82,8 @@ const addFollowCtrl = catchAsync(
 const unFollowCtrl = catchAsync(
   async (req, res) => {
     const beFollowedId = req.params.userId;
-    const followingId = req.verifiedUserClaims.sub;
-    const result = await UserService.unFollow(beFollowedId, followingId);
+    const authorizedId = req.verifiedUserClaims.sub;
+    const result = await UserService.unFollow(beFollowedId, authorizedId);
     res.json({ success: true, result });
   },
   { message: "Could not cancel follow " }
@@ -94,13 +104,13 @@ const postRefreshTokenCtrl = catchAsync(
 
 const getFriendsCtrl = catchAsync(
   async (req, res) => {
-    console.log(req.verifiedUserClaims.sub);
-    const userId = req.verifiedUserClaims.sub;
+    const userId = req.params.userId;
     const result = await UserService.getFriends(userId);
     res.json({ success: true, result });
   },
   { message: "Could not get Friends" }
 );
+
 export const UserController = {
   registerUserCtrl,
   loginUserCtrl,
@@ -111,4 +121,5 @@ export const UserController = {
   unFollowCtrl,
   postRefreshTokenCtrl,
   getFriendsCtrl,
+  verifyEmailCtrl,
 };

@@ -13,12 +13,10 @@ export const postNewProduct = async ({ productInfo, photos, userId }) => {
     description: productInfo.description,
   });
 
-  const updatedUser = await User.findOneAndUpdate(
+  await User.findOneAndUpdate(
     { _id: userId },
     { $push: { products: newProduct._id } }
   );
 
-  const user = await User.findById(userId);
-
-  return { newProduct, user };
+  return { newProduct };
 };

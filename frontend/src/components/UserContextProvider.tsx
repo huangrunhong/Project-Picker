@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import UserContext from "../contexts/UserContext";
 import User from "../types/User";
 import AuthorizationContext from "../contexts/AuthorizationContext";
+import fetchUser from "../services/fetchUser";
 
 type UserContextProviderProps = {
   children: React.ReactNode;
@@ -18,16 +19,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
     const decoded = jwtDecode(accessToken);
 
-    const fetchUser = async () => {
-      const response = await fetch(`/api/users/${decoded.sub}/profile/`);
-      const { result } = await response.json();
-
-      console.log(result);
-
-      setUser(result);
-    };
-
-    fetchUser();
+    fetchUser(decoded.sub ?? "", setUser);
   }, [accessToken, setUser]);
 
   return (

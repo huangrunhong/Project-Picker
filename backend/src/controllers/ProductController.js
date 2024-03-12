@@ -3,13 +3,8 @@ import { catchAsync } from "../utils/catchAsync.js";
 
 const getAllProductsCtrl = catchAsync(
   async (req, res) => {
-    let result;
-    const search = req.query.search;
-    if (search) {
-      result = await ProductService.getAllProducts({
-        title: new RegExp(search, "i"),
-      });
-    } else result = await ProductService.getAllProducts();
+    const result = await ProductService.getAllProducts(req.query);
+
     res.json({ success: true, result });
   },
   { message: "Could not get products" }
@@ -93,6 +88,17 @@ const unlikeProductCtrl = catchAsync(
   }
 );
 
+const getUserProductsCtrl = catchAsync(
+  async (req, res) => {
+    const userId = req.params.userId;
+    const result = await ProductService.getUserProducts(userId);
+    res.json({ success: true, result });
+  },
+  {
+    message: "could not get more products",
+  }
+);
+
 export const ProductController = {
   getAllProductsCtrl,
   postNewProductCtrl,
@@ -101,4 +107,5 @@ export const ProductController = {
   deleteProductCtrl,
   addLikeProductCtrl,
   unlikeProductCtrl,
+  getUserProductsCtrl,
 };

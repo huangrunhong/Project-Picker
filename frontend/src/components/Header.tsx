@@ -2,18 +2,23 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
 import UserContext from "../contexts/UserContext";
+import AuthorizationContext from "../contexts/AuthorizationContext";
+
+import Dropdown from "./Dropdown";
+import Avatar from "./Avatar";
 
 import styles from "./Header.module.scss";
-import Dropdown from "./Dropdown";
-import AuthorizationContext from "../contexts/AuthorizationContext";
-import Avatar from "./Avatar";
 
 const Header = () => {
   const [user, setUser] = useContext(UserContext);
   const [active, setActive] = useState(false);
   const [_, setAccessToken] = useContext(AuthorizationContext);
 
-  const logout = () => {
+  const logout = async () => {
+    const response = await fetch("/api/users/logout", {
+      method: "POST",
+    });
+    await response.json();
     setAccessToken(undefined);
     setUser(undefined);
   };
@@ -21,7 +26,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <Link to="/">
-        <h1>Picker</h1>
+        <h1>Produuucts</h1>
       </Link>
       {user && (
         <Dropdown active={active} setActive={setActive}>

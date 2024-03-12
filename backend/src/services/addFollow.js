@@ -1,16 +1,24 @@
 import User from "../model/User.js";
 
-export const addFollow = async (toBeFollowedId, followingId) => {
+export const addFollow = async (toBeFollowedId, authorizedId) => {
+  const toBeFollowedUserExist = await User.findOne({
+    _id: authorizedId,
+    follows: { $in: [toBeFollowedId] },
+  });
+
+  if (toBeFollowedUserExist)
+    throw new Error(`User with Id ${toBeFollowedId} already exist`);
+
   const toBeFollowedUser = await User.findOneAndUpdate(
     { _id: toBeFollowedId },
-    { $push: { followers: followingId } }
+    { $push: { followers: authorizedId } }
   );
 
   if (!toBeFollowedUser)
     throw new Error(`User with ID ${toBeFollowedId} does not exist!`);
 
   const followingUser = await User.findOneAndUpdate(
-    { _id: followingId },
+    { _id: authorizedId },
     { $push: { follows: toBeFollowedId } }
   );
 
@@ -21,7 +29,7 @@ export const addFollow = async (toBeFollowedId, followingId) => {
 
   const updatedBeFollowedUser = await User.findById(toBeFollowedId);
 
-  const updatedFollowingUser = await User.findById(followingId);
+  const updatedFollowingUser = await User.findById(authorizedId);
 
   return { updatedBeFollowedUser, updatedFollowingUser };
 };

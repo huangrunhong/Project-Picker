@@ -1,7 +1,9 @@
+import User from "./User";
+
 type Product = {
   _id: string;
   name: string;
-  owner: string;
+  owner: User;
   description: string;
   field: string;
   colors: string[];

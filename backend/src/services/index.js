@@ -13,6 +13,8 @@ import { editProduct } from "./editProduct.js";
 import { unlikeProduct } from "./unlikeProduct.js";
 import { deleteProduct } from "./deleteProduct.js";
 import { getFriends } from "./getFriends.js";
+import { getUserProducts } from "./getUserProducts.js";
+import { verifyEmail } from "./verifyEmail.js";
 
 export const UserService = {
   registerUser,
@@ -23,6 +25,7 @@ export const UserService = {
   unFollow,
   refreshToken,
   getFriends,
+  verifyEmail,
 };
 
 export const ProductService = {
@@ -33,4 +36,5 @@ export const ProductService = {
   deleteProduct,
   addLikeProduct,
   unlikeProduct,
+  getUserProducts,
 };

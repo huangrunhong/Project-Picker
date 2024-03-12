@@ -13,7 +13,9 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-
+  span {
+    font-family: "Pacifico", cursive;
+  }
   .errorMessage {
     display: none;
     color: var(--red-400);

@@ -17,11 +17,11 @@ const userSchema = mongoose.Schema(
     hobbies: [{ type: String }],
     country: { type: String },
     city: { type: String },
-    createAt: { type: Date },
-    products: [{ type: String }],
-    likes: [{ type: String }],
-    followers: [{ type: String }],
-    follows: [{ type: String }],
+    createdAt: { type: Date },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    follows: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { collection: "users", timestamps: true }
 );
@@ -45,4 +45,5 @@ userSchema.methods.toProfileInfo = function () {
 };
 
 const User = mongoose.model("User", userSchema);
+
 export default User;

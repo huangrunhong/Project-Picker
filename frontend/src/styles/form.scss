@@ -24,6 +24,27 @@ button {
   &:hover {
     background-color: var(--slate-700);
   }
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.399);
+  i {
+    font-size: 1.25rem;
+    color: var(--slate-100);
+
+    &:active {
+      transform: scale(1.2);
+    }
+  }
 }
 
 input,
@@ -33,9 +54,11 @@ textarea {
   border-radius: var(--border-radius);
   background-color: var(--slate-100);
   border: none;
+  color: var(--slate-400);
 
   &:focus {
     outline: none;
+    color: var(--slate-800);
   }
 
   &::placeholder {

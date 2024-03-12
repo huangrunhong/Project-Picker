@@ -1,21 +1,23 @@
 import { useContext, useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+
 import Layout from "../components/Layout";
 import UserContext from "../contexts/UserContext";
-
-import styles from "./Profile.module.scss";
 import Avatar from "../components/Avatar";
 import User from "../types/User";
-import { useParams, Link } from "react-router-dom";
 import Tab from "../components/Tab";
-import Product from "../types/Product";
+
 import ProductCard from "../components/ProductCard";
+
+import styles from "./Profile.module.scss";
+import UserCard from "../components/UserCard";
+import ToggleFollowButton from "../components/ToggleFollowButton";
 
 const Profile = () => {
   const params = useParams();
   const [authorizedUser] = useContext(UserContext);
   const [user, setUser] = useState<User | undefined>(undefined);
   const [selectedTab, setSelectedTab] = useState("products");
-  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     if (authorizedUser?._id === params.userId) {
@@ -23,7 +25,7 @@ const Profile = () => {
     } else {
       const fetchUser = async () => {
         try {
-          const response = await fetch(`/api/users/${params.userId}/profile/`);
+          const response = await fetch(`/api/users/${params.userId}/profile`);
           const { result } = await response.json();
 
           setUser(result);
@@ -31,43 +33,35 @@ const Profile = () => {
           console.log(error);
         }
       };
-
-      const fetchProduct = async () => {
-        try {
-          const response = await fetch(`/api/products`);
-          const { result } = await response.json();
-
-          setProducts(result);
-        } catch (error) {
-          console.log(error);
-        }
-      };
       fetchUser();
-      fetchProduct();
     }
-  }, [authorizedUser]);
+  }, [authorizedUser, params.userId]);
 
   if (!user) {
     return null;
   }
 
+  const friends = user.followers.filter((follower) =>
+    user.follows.some((follow) => follow._id === follower._id)
+  );
+
   return (
     <Layout>
       <div className={styles.profileInfo}>
-        <Avatar avatar={authorizedUser?.profileImage} large />
+        <Avatar avatar={user?.profileImage} large />
         <div className={styles.information}>
           <h2>{user.name}</h2>
+          <p>{user.occupation}</p>
+          <p>{user.email}</p>
           <p>
             {user.city}, {user.country}
           </p>
-          <p>
-            followers - {user.followers?.length ?? 0} | following -
-            {user.follows?.length ?? 0}
-          </p>
-          {authorizedUser ? (
-            <button className="primary-button">Edit</button>
+          {authorizedUser?._id === params.userId ? (
+            <Link to="/setting">
+              <button className="primary-button">Edit</button>
+            </Link>
           ) : (
-            <button className="primary-button">Follow</button>
+            <ToggleFollowButton userId={params.userId} />
           )}
         </div>
       </div>
@@ -78,19 +72,51 @@ const Profile = () => {
             { value: "likes", label: "Likes" },
             { value: "follows", label: "Follows" },
             { value: "followers", label: "Followers" },
+            { value: "friends", label: "Friends" },
           ]}
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
         />
         {selectedTab === "products" && (
           <div className={styles.products}>
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
+            {user.products.map((product) => (
+              <ProductCard key={product._id} product={product} initiative />
             ))}
 
             <Link to="/post-product" className={styles.addProduct}>
               <i className="ri-add-large-line"></i>
             </Link>
+          </div>
+        )}
+        {selectedTab === "likes" && (
+          <div className={styles.products}>
+            {user.likes.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        )}
+        {selectedTab === "follows" && (
+          <div className={styles.products}>
+            {user.follows.map((follow) => (
+              <Link key={follow._id} to={`/user/${follow._id}/profile`}>
+                <UserCard user={follow} />
+              </Link>
+            ))}
+          </div>
+        )}
+        {selectedTab === "followers" && (
+          <div className={styles.products}>
+            {user.followers.map((follower, index) => (
+              <UserCard key={index} user={follower} />
+            ))}
+          </div>
+        )}
+
+        {selectedTab === "friends" && (
+          <div className={styles.products}>
+            {friends.map((friend, index) => (
+              <UserCard key={index} user={friend} />
+            ))}
           </div>
         )}
       </div>

@@ -19,7 +19,7 @@ export const registerUser = async (userInfo) => {
     country: userInfo.country,
     city: userInfo.city,
     createAt: createDate,
-    emailVerified: true, //后续要改成false
+    emailVerified: true,
   });
 
   await sendVerificationEmail(user);

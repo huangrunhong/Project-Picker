@@ -23,7 +23,13 @@ export const productRouter = express
     ProductController.postNewProductCtrl
   )
   .get("/:productId", ProductController.getProductDetailCtrl)
-  .patch("/:productId", doJwtAuth, ProductController.editProductCtrl)
+  .patch(
+    "/:productId",
+    uploadMiddleWare.array("photos", 12),
+    doJwtAuth,
+    ProductController.editProductCtrl
+  )
   .delete("/:productId", doJwtAuth, ProductController.deleteProductCtrl)
   .post("/:productId/like", doJwtAuth, ProductController.addLikeProductCtrl)
-  .post("/:productId/unlike", doJwtAuth, ProductController.unlikeProductCtrl);
+  .post("/:productId/unlike", doJwtAuth, ProductController.unlikeProductCtrl)
+  .get("/user/:userId", ProductController.getUserProductsCtrl);

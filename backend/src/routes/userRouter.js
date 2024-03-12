@@ -17,6 +17,8 @@ export const userRouter = express
   .post("/register", UserController.registerUserCtrl)
   .post("/login", UserController.loginUserCtrl)
   .post("/logout", doJwtAuth, UserController.logoutUserCtrl)
+  .post("/refreshToken", doJwtAuth, UserController.postRefreshTokenCtrl)
+  .post("/verifyEmail", UserController.verifyEmailCtrl)
   .get("/:userId/profile", UserController.getUserProfileCtrl)
   .patch(
     "/profile",
@@ -26,5 +28,4 @@ export const userRouter = express
   )
   .post("/:userId/profile/add-follow", doJwtAuth, UserController.addFollowCtrl)
   .post("/:userId/profile/not-follow", doJwtAuth, UserController.unFollowCtrl)
-  .post("/refreshToken", doJwtAuth, UserController.postRefreshTokenCtrl)
-  .get("/friends", doJwtAuth, UserController.getFriendsCtrl);
+  .get("/:userId/friends", doJwtAuth, UserController.getFriendsCtrl);
